@@ -9,7 +9,7 @@ import { getUsers } from '../apiCalls/userCalls';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import IUser from '../model/IUser';
 import { SnackBar } from './UserPosts.styles';
-import { User_Div, User_Title } from './UsersTable.styles';
+import { TableCells, User_Div, User_Title } from './UsersTable.styles';
 
 const UsersTable = (onSelectUser: any) => {
   const [users, setUsers] = useState([]);
@@ -50,9 +50,9 @@ const UsersTable = (onSelectUser: any) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Company Name</TableCell>
+              <TableCells>Name</TableCells>
+              <TableCells>Email</TableCells>
+              <TableCells>Company Name</TableCells>
             </TableRow>
           </TableHead>
           <TableBody>
