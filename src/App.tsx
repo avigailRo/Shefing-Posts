@@ -18,12 +18,8 @@ function App() {
     <div style={{ display: 'flex' }}>
       {<ErrorModel></ErrorModel>}
       {<Loader />}
-      <div style={{ flex: 1 }}>
         <UsersTable/>
-      </div>
-      <div style={{ flex: 2 }}>
         { <UserPosts/>}
-      </div>
     </div>
   );
   }

@@ -41,18 +41,20 @@ const handleCloseSnackbar = () => setSnackbar(null);
   }, [user]);
   const formik = useFormik({
     initialValues: {
-      userId:0,
         title: '',
         body: '',
     },
     validationSchema,
-    onSubmit: (values: { title: string, body: string,userId:number }) => {
+    onSubmit: (values: { title: string, body: string }) => {
         async function handleCreatePost() {
-          const newPost:IPost = { userId: values.userId, title: values.title ,body:values.body};
+          const newPost:IPost = { userId: user.id, title: values.title ,body:values.body};
               addPost(newPost).then(res => {
                 setPosts([...posts, res.data])
                 setSnackbar({ children: ' successfully add', severity: 'success' });
-                setOpenDialog(false);  }).catch(err => {
+                setOpenDialog(false); 
+                values.title='';
+                values.body='';
+               }).catch(err => {
                   setSnackbar({ children: "something went wrong a error occurred"+err.response.data, severity: 'error' });})
            
         }
@@ -74,15 +76,16 @@ const handleCloseSnackbar = () => setSnackbar(null);
   return (
     user && posts&&
     <div>
-      <List>
+            <h1>user posts</h1><br></br>
+      <div style={{overflow:"auto",maxHeight:"100vh"}}>
         {posts.map((post: any) => (
-          <ListItem key={post.id}>
-            <ListItemText primary={post.title} />
+          <div key={post.id}>
+            <h3>{post.title}</h3>
             <br></br>
-            <ListItemText primary={post.body} />
-          </ListItem>
+            <p>{post.body}</p>
+          </div>
         ))}
-      </List>
+      </div>
       <Button variant="contained" onClick={() => setOpenDialog(true)}>
         Create Post
       </Button>
