@@ -11,6 +11,7 @@ import IUserState from '../model/IUserState';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { Text } from "../components/globalModal/GlobalModal.styles";
+import { Post_Div, Post_Title, SnackBar } from './UserPosts.styles';
 
 const validationSchema = yup.object({
   title: yup.string().required('Title is required').min(4, 'Title must be at least 4 characters'),
@@ -23,10 +24,10 @@ const UserPosts = (props: any) => {
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostBody, setNewPostBody] = useState('');
   const [snackbar, setSnackbar] = React.useState<Pick<
-  AlertProps,
-  'children' | 'severity'
-> | null>(null);
-const handleCloseSnackbar = () => setSnackbar(null);
+    AlertProps,
+    'children' | 'severity'
+  > | null>(null);
+  const handleCloseSnackbar = () => setSnackbar(null);
 
   const user: IUser = useSelector<RootState, IUserState>((state: any) => state.userReducer).user;
 
@@ -35,49 +36,54 @@ const handleCloseSnackbar = () => setSnackbar(null);
       getPosts(user.id).then(res => {
         setPosts(res.data)
       }).catch(err => {
-        setSnackbar({ children: "something went wrong a error occurred"+err.response.data, severity: 'error' });
+        setSnackbar({ children: "something went wrong a error occurred" + err.response.data, severity: 'error' });
       })
     }
   }, [user]);
   const formik = useFormik({
     initialValues: {
-        title: '',
-        body: '',
+      title: '',
+      body: '',
     },
     validationSchema,
     onSubmit: (values: { title: string, body: string }) => {
-        async function handleCreatePost() {
-          const newPost:IPost = { userId: user.id, title: values.title ,body:values.body};
-              addPost(newPost).then(res => {
-                setPosts([...posts, res.data])
-                setSnackbar({ children: ' successfully add', severity: 'success' });
-                setOpenDialog(false); 
-                values.title='';
-                values.body='';
-               }).catch(err => {
-                  setSnackbar({ children: "something went wrong a error occurred"+err.response.data, severity: 'error' });})
-           
-        }
-        handleCreatePost();
+      async function handleCreatePost() {
+        const newPost: IPost = { userId: user.id, title: values.title, body: values.body };
+        addPost(newPost).then(res => {
+          setPosts([...posts, res.data])
+          setSnackbar({ children: ' successfully add', severity: 'success' });
+          setOpenDialog(false);
+          values.title = '';
+          values.body = '';
+        }).catch(err => {
+          setSnackbar({ children: "something went wrong a error occurred" + err.response.data, severity: 'error' });
+        })
+
+      }
+      handleCreatePost();
     }
-});
+  });
   const handleCreatePost = () => {
-    const newPost:IPost = { userId: user.id, title: newPostTitle ,body:newPostBody};
+    const newPost: IPost = { userId: user.id, title: newPostTitle, body: newPostBody };
     addPost(newPost).then(res => {
       setPosts([...posts, res.data])
       setSnackbar({ children: ' successfully add', severity: 'success' });
-      setOpenDialog(false);  }).catch(err => {
-        setSnackbar({ children: "something went wrong a error occurred"+err.response.data, severity: 'error' });
-      })
+      setOpenDialog(false);
+    }).catch(err => {
+      setSnackbar({ children: "something went wrong a error occurred" + err.response.data, severity: 'error' });
+    })
 
 
   };
 
   return (
-    user && posts&&
+    user && posts &&
     <div>
-            <h1>user posts</h1><br></br>
-      <div style={{overflow:"auto",maxHeight:"100vh",width:"50vh"}}>
+      <Post_Title>user posts</Post_Title><br></br>
+      <Button variant="contained" onClick={() => setOpenDialog(true)}>
+        Create Post
+      </Button>
+      <Post_Div>
         {posts.map((post: any) => (
           <div key={post.id}>
             <h3>{post.title}</h3>
@@ -85,54 +91,52 @@ const handleCloseSnackbar = () => setSnackbar(null);
             <p>{post.body}</p>
           </div>
         ))}
-      </div>
-      <Button variant="contained" onClick={() => setOpenDialog(true)}>
-        Create Post
-      </Button>
+      </Post_Div>
+
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Create New Post</DialogTitle>
         <DialogContent>
-        <form onSubmit={formik.handleSubmit}>
-                <FormHelperText>Title</FormHelperText>
-                <Text><TextField id="title" name="title" fullWidth margin='normal'
-                    value={formik.values.title}
+          <form onSubmit={formik.handleSubmit}>
+            <FormHelperText>Title</FormHelperText>
+            <Text><TextField id="title" name="title" fullWidth margin='normal'
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.title && Boolean(formik.errors.title)}
+              helperText={formik.touched.title && formik.errors.title}
+            /></Text>
+
+            <Text>
+              <Grid item container xs={12} sm={12}>
+                <Grid item xs={12} sm={8} sx={{ pr: 2 }}>
+                  <FormHelperText>Content</FormHelperText>
+                  <TextField id="body" name="body" fullWidth margin='normal'
+                    value={formik.values.body}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    error={formik.touched.title && Boolean(formik.errors.title)}
-                    helperText={formik.touched.title && formik.errors.title}
-                /></Text>
+                    error={formik.touched.body && Boolean(formik.errors.body)}
+                    helperText={formik.touched.body && formik.errors.body}
+                  />
+                </Grid>
 
-                <Text>
-                    <Grid item container xs={12} sm={12}>
-                        <Grid item xs={12} sm={8} sx={{ pr: 2 }}>
-                            <FormHelperText>Content</FormHelperText>
-                            <TextField id="body" name="body" fullWidth margin='normal'
-                                value={formik.values.body}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.body && Boolean(formik.errors.body)}
-                                helperText={formik.touched.body && formik.errors.body}
-                            />
-                        </Grid>
+              </Grid>
+            </Text>
+            <Button type="submit" variant="contained" >
 
-                       </Grid>
-                       </Text>
-          <Button type="submit" variant="contained" >
-
-            Create
-          </Button>
+              Create
+            </Button>
           </form>
         </DialogContent>
       </Dialog>
       {!!snackbar && (
-        <Snackbar style={{position:"absolute",top:"300px"}}
+        <SnackBar 
           open
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           onClose={handleCloseSnackbar}
           autoHideDuration={6000}
         >
           <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>)}
+        </SnackBar>)}
     </div>
   );
 };

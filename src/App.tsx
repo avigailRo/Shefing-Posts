@@ -15,7 +15,7 @@ function App() {
     AxiosInstance(store); 
   }, []);
   return (
-    <div style={{ display: 'flex' }}>
+    <div className='App-div'>
       {<ErrorModel></ErrorModel>}
       {<Loader />}
         <UsersTable/>

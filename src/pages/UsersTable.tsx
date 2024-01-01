@@ -8,30 +8,32 @@ import { setUser } from '../redux/slices/userSlice';
 import { getUsers } from '../apiCalls/userCalls';
 import Alert, { AlertProps } from '@mui/material/Alert';
 import IUser from '../model/IUser';
+import { SnackBar } from './UserPosts.styles';
+import { User_Div, User_Title } from './UsersTable.styles';
 
-const UsersTable = ( onSelectUser:any ) => {
+const UsersTable = (onSelectUser: any) => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [nameFilter, setNameFilter] = useState('');
   const [emailFilter, setEmailFilter] = useState('');
   const dispatch = useDispatch()
   const [snackbar, setSnackbar] = React.useState<Pick<
-  AlertProps,
-  'children' | 'severity'
-> | null>(null);
-const handleCloseSnackbar = () => setSnackbar(null);
+    AlertProps,
+    'children' | 'severity'
+  > | null>(null);
+  const handleCloseSnackbar = () => setSnackbar(null);
 
-   useEffect(() => {
+  useEffect(() => {
     getUsers().then(res => {
       setUsers(res.data)
-  }).catch(err => {
-    setSnackbar({ children: "something went wrong a error occurred"+err.response.data, severity: 'error' });
-  })
-}, []);
+    }).catch(err => {
+      setSnackbar({ children: "something went wrong a error occurred" + err.response.data, severity: 'error' });
+    })
+  }, []);
 
 
   useEffect(() => {
-    const filtered = users.filter((user:IUser) => {
+    const filtered = users.filter((user: IUser) => {
       const nameMatch = user.name.toLowerCase().includes(nameFilter.toLowerCase());
       const emailMatch = user.email.toLowerCase().includes(emailFilter.toLowerCase());
       return nameMatch && emailMatch;
@@ -39,9 +41,9 @@ const handleCloseSnackbar = () => setSnackbar(null);
     setFilteredUsers(filtered);
   }, [users, nameFilter, emailFilter]);
 
-  return (
-    <div style={{overflow:"auto",maxHeight:"100vh"}}>
-    <h1 >users</h1><br></br>
+  return (<div>
+    <User_Title>users</User_Title><br></br>
+    <User_Div >
       <TextField label="Filter by Name" onChange={(e) => setNameFilter(e.target.value)} />
       <TextField label="Filter by Email" onChange={(e) => setEmailFilter(e.target.value)} />
       <TableContainer component={Paper}>
@@ -54,11 +56,11 @@ const handleCloseSnackbar = () => setSnackbar(null);
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredUsers.map((user:IUser) => (
+            {filteredUsers.map((user: IUser) => (
               <TableRow key={user.id} onClick={() => {
-               dispatch(setUser(user));
+                dispatch(setUser(user));
 
-            }}>
+              }}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.company.name}</TableCell>
@@ -68,15 +70,16 @@ const handleCloseSnackbar = () => setSnackbar(null);
         </Table>
       </TableContainer>
       {!!snackbar && (
-        <Snackbar style={{position:"absolute",top:"300px"}}
+        <SnackBar 
           open
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           onClose={handleCloseSnackbar}
           autoHideDuration={6000}
         >
           <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>)}
-    </div>
+        </SnackBar>)}
+    </User_Div>
+  </div>
   );
 };
 
