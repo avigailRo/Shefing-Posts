@@ -77,7 +77,7 @@ const handleCloseSnackbar = () => setSnackbar(null);
     user && posts&&
     <div>
             <h1>user posts</h1><br></br>
-      <div style={{overflow:"auto",maxHeight:"100vh"}}>
+      <div style={{overflow:"auto",maxHeight:"100vh",width:"50vh"}}>
         {posts.map((post: any) => (
           <div key={post.id}>
             <h3>{post.title}</h3>

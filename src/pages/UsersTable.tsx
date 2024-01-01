@@ -40,8 +40,8 @@ const handleCloseSnackbar = () => setSnackbar(null);
   }, [users, nameFilter, emailFilter]);
 
   return (
-    <div>
-      <h1 >users</h1><br></br>
+    <div style={{overflow:"auto",maxHeight:"100vh"}}>
+    <h1 >users</h1><br></br>
       <TextField label="Filter by Name" onChange={(e) => setNameFilter(e.target.value)} />
       <TextField label="Filter by Email" onChange={(e) => setEmailFilter(e.target.value)} />
       <TableContainer component={Paper}>
