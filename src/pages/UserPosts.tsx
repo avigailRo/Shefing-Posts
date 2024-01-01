@@ -11,7 +11,7 @@ import IUserState from '../model/IUserState';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { Text } from "../components/globalModal/GlobalModal.styles";
-import { Post_Div, Post_Title, SnackBar } from './UserPosts.styles';
+import { Content_Div, Create_Button, Post_Div, Post_Title, SnackBar } from './UserPosts.styles';
 
 const validationSchema = yup.object({
   title: yup.string().required('Title is required').min(4, 'Title must be at least 4 characters'),
@@ -80,16 +80,16 @@ const UserPosts = (props: any) => {
     user && posts &&
     <div>
       <Post_Title>user posts</Post_Title><br></br>
-      <Button variant="contained" onClick={() => setOpenDialog(true)}>
+      <Create_Button variant="contained" onClick={() => setOpenDialog(true)}>
         Create Post
-      </Button>
+      </Create_Button>
       <Post_Div>
         {posts.map((post: any) => (
-          <div key={post.id}>
+          <Content_Div key={post.id}>
             <h3>{post.title}</h3>
             <br></br>
             <p>{post.body}</p>
-          </div>
+          </Content_Div>
         ))}
       </Post_Div>
 
